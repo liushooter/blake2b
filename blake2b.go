@@ -68,6 +68,7 @@ type Tree struct {
 var (
 	defaultConfig = &Config{Size: Size}
 	config256     = &Config{Size: 32}
+	ckbconfig256  = &Config{Size: 32, Person: []byte("ckb-default-hash")}
 )
 
 func verifyConfig(c *Config) error {
@@ -286,6 +287,15 @@ func Sum512(data []byte) [64]byte {
 func Sum256(data []byte) (out [32]byte) {
 	var d digest
 	d.initialize(config256)
+	d.Write(data)
+	sum := d.checkSum()
+	copy(out[:], sum[:32])
+	return
+}
+
+func CkbSum256(data []byte) (out [32]byte) {
+	var d digest
+	d.initialize(ckbconfig256)
 	d.Write(data)
 	sum := d.checkSum()
 	copy(out[:], sum[:32])
